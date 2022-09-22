@@ -1,0 +1,11 @@
+table.table.table-striped
+  tr
+    th
+    td = link_to 'Award Spotlight', award_admin_user_path(user, type: "Spotlight"), class:"btn btn-pure btn-primary"
+  tr
+    th
+    td = link_to 'Award Instant Match', award_admin_user_path(user, type: "Instant Match"), class:"btn btn-pure btn-primary"
+  - for attribute in user.attributes.keys
+    tr
+      th style="width:200px;" = attribute.humanize
+      td = user.attributes[attribute].to_s

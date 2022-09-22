@@ -1,0 +1,138 @@
+= content_for :body_class, 'site-menubar-unfold site-menubar-keep'
+nav.site-navbar.navbar.navbar-inverse.navbar-fixed-top.navbar-mega role="navigation"
+  .navbar-header
+    button.navbar-toggle.hamburger.hamburger-close.navbar-toggle-left.hided data-toggle="menubar" type="button"
+      span.sr-only Toggle navigation
+      span.hamburger-bar
+    button.navbar-toggle.collapsed data-target="#site-navbar-collapse" data-toggle="collapse" type="button"
+      i.icon.md-more aria-hidden="true"
+    .navbar-brand.navbar-brand-center
+      = image_tag "logo.png", class:'navbar-brand-logo'
+      span.navbar-brand-text.hidden-xs Entourage
+    button.navbar-toggle.collapsed data-target="#site-navbar-search" data-toggle="collapse" type="button"
+      span.sr-only Toggle Search
+      i.icon.md-search aria-hidden="true"
+  .navbar-container.container-fluid
+    /! Navbar Collapse
+    #site-navbar-collapse.collapse.navbar-collapse.navbar-collapse-toolbar
+      /! Navbar Toolbar
+      ul.nav.navbar-toolbar
+        li#toggleMenubar.hidden-float
+          a data-toggle="menubar" href="#" role="button"
+            i.icon.hamburger.hamburger-arrow-left
+              span.sr-only Toggle menubar
+              span.hamburger-bar
+        li#toggleFullscreen.hidden-xs
+          a.icon.icon-fullscreen data-toggle="fullscreen" href="#" role="button"
+            span.sr-only Toggle fullscreen
+        li.hidden-float
+          a.icon.md-search data-target="#site-navbar-search" data-toggle="collapse" href="#" role="button"
+            span.sr-only Toggle Search
+      /! End Navbar Toolbar
+      /! Navbar Toolbar Right
+      ul.nav.navbar-toolbar.navbar-right.navbar-toolbar-right
+
+        li.dropdown
+          a.navbar-avatar.dropdown-toggle aria-expanded="false" data-animation="scale-up" data-toggle="dropdown" href="#" role="button"
+            span.avatar.avatar-online
+              = image_tag 'admin.png'
+              i
+          ul.dropdown-menu role="menu"
+            li role="presentation"
+              a href=destroy_admin_session_path data-method="delete" role="menuitem"
+                i.icon.md-power aria-hidden="true"
+                | Logout
+      /! End Navbar Toolbar Right
+    /! End Navbar Collapse
+    /! Site Navbar Seach
+    #site-navbar-search.collapse.navbar-search-overlap
+      form role="search"
+        .form-group
+          .input-search
+            i.input-search-icon.md-search aria-hidden="true"
+            input.form-control name="site-search" placeholder="Search..." type="text" /
+            button.input-search-close.icon.md-close aria-label="Close" data-target="#site-navbar-search" data-toggle="collapse" type="button"
+    /! End Site Navbar Seach
+    #custom_notifications.custom-notifications.dsp_none
+      ul.list-unstyled.notifications.clearfix data-tabbed_notifications="notif-group"
+      .clearfix
+      #notif-group.tabbed_notifications
+ruby:
+  if params[:user_id].blank?
+    user = User.first
+    if user.nil?
+      user = 0
+    end
+  else
+    user = params[:user_id]
+  end
+
+.site-menubar
+  .site-menubar-body
+    div
+      div
+        ul.site-menu
+          li.site-menu-item
+            a.animsition-link href=admin_root_path
+              i.site-menu-icon.md-view-dashboard aria-hidden="true"
+              span.site-menu-title Dashboard
+
+          li.site-menu-item.has-sub
+            a href="javascript:void(0)"
+              i.site-menu-icon.fa.fa-user-circle aria-hidden="true"
+              span.site-menu-title Users
+              span.site-menu-arrow
+            ul.site-menu-sub
+              li.site-menu-item
+                a.animsition-link href=admin_users_path
+                  i.site-menu-icon.fa.fa-mobile aria-hidden="true"
+                  span.site-menu-title All
+              li.site-menu-item
+                a.animsition-link href=admin_users_path(q: {is_blocked_eq: true})
+                  i.site-menu-icon.fa.fa-ban aria-hidden="true"
+                  span.site-menu-title Banned
+              li.site-menu-item
+                a.animsition-link href=active_admin_users_path
+                  i.site-menu-icon.fa.fa-check aria-hidden="true"
+                  span.site-menu-title Active
+          li.site-menu-item
+            a href=admin_reports_path
+              i.site-menu-icon.fa.fa-file aria-hidden="true"
+              span.site-menu-title Reports
+
+          li.site-menu-item.has-sub
+            a href="javascript:void(0)"
+              i.site-menu-icon.fa.fa-tablet aria-hidden="true"
+              span.site-menu-title Notification
+              span.site-menu-arrow
+            ul.site-menu-sub
+              li.site-menu-item
+                a.animsition-link href= admin_devices_path
+                  i.site-menu-icon.fa.fa-mobile aria-hidden="true"
+                  span.site-menu-title Device
+              li.site-menu-item
+                a.animsition-link href= admin_notifications_path
+                  i.site-menu-icon.fa.fa-play aria-hidden="true"
+                  span.site-menu-title Notification
+          li.site-menu-item.has-sub
+            a href="javascript:void(0)"
+              i.site-menu-icon.fa.fa-info-circle aria-hidden="true"
+              span.site-menu-title Group Status
+              span.site-menu-arrow
+            ul.site-menu-sub
+              li.site-menu-item
+                a.animsition-link href=admin_group_statuses_path(query: {status_type_eq: 0})
+                  i.site-menu-icon.fa.fa-globe aria-hidden="true"
+                  span.site-menu-title Global
+              li.site-menu-item
+                a.animsition-link href=admin_group_statuses_path(query: {status_type_eq: 2})
+                  i.site-menu-icon.fa.fa-map-marker  aria-hidden="true"
+                  span.site-menu-title Places
+              li.site-menu-item
+                a.animsition-link href=admin_group_statuses_path(query: {status_type_eq: 1})
+                  i.site-menu-icon.fa.fa-snowflake-o aria-hidden="true"
+                  span.site-menu-title Custom
+          li.site-menu-item
+            a href=setting_admin_users_path
+              i.site-menu-icon.fa.fa-cog aria-hidden="true"
+              span.site-menu-title Setting

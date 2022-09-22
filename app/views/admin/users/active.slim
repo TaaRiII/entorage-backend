@@ -1,0 +1,107 @@
+.page
+  .page-header
+    h1.page-title Active User List
+    ol.breadcrumb
+      li
+        a href="#{admin_root_path}"  Home
+      li
+        a href="#{active_admin_users_path}"  Active User
+      li.active Active User List
+
+  .page-content
+    = render "shared/messages"
+    .row
+      .col-lg-3
+        #widgetLineareaOne.widget.widget-shadow
+          .widget-content
+            .padding-20.padding-top-10
+              .clearfix
+                .grey-800.pull-left.padding-vertical-10
+                  i.icon.md-accounts.grey-600.font-size-24.vertical-align-bottom.margin-right-5
+                  | &nbsp;Total Active Users
+                span.pull-right.grey-700.font-size-30 #{User.active.count}
+      .col-lg-3
+        #widgetLineareaOne.widget.widget-shadow
+          .widget-content
+            .padding-20.padding-top-10
+              .clearfix
+                .grey-800.pull-left.padding-vertical-10
+                  i.icon.md-male.grey-600.font-size-24.vertical-align-bottom.margin-right-5
+                  | &nbsp;Male Active Users
+                span.pull-right.grey-700.font-size-30 #{User.active.where(gender: 'male').count}
+      .col-lg-3
+        #widgetLineareaOne.widget.widget-shadow
+          .widget-content
+            .padding-20.padding-top-10
+              .clearfix
+                .grey-800.pull-left.padding-vertical-10
+                  i.icon.md-female.grey-600.font-size-24.vertical-align-bottom.margin-right-5
+                  | &nbsp;Female Active Users
+                span.pull-right.grey-700.font-size-30 #{User.active.where(gender: 'female').count}
+      .col-lg-3
+        #widgetLineareaOne.widget.widget-shadow
+          .widget-content
+            .padding-20.padding-top-10
+              .clearfix
+                .grey-800.pull-left.padding-vertical-10
+                  i.icon.md-account.grey-600.font-size-24.vertical-align-bottom.margin-right-5
+                  | &nbsp;Other Active Users
+                span.pull-right.grey-700.font-size-30 #{User.active.where(gender: 'other').count}
+
+    .panel
+      .panel-body.container-fluid
+        = simple_form_for [:admin,@q], url:active_admin_users_path, html:{method: :get, id: "search_from"}  do |f|
+          .row
+            .col-md-2
+              = f.input :user_name_or_first_name_or_last_name_cont, label:false, required:false, placeholder:'Name or User Name'
+            .col-md-2
+              = f.input :phone_number_cont, label:false, required:false, placeholder:'Phone Number'
+            .col-md-2
+              = f.select :gender_eq, options_for_select(User.genders.keys.to_a.each_with_index.map { |x,i| [x, i] }, @q.gender_eq),{prompt: 'Select Gender'}, {class:'form-control ', data:{placeholder:'Select Gender'} }
+
+            .col-md-2
+              button.btn.btn-primary.btn-search  type="submit" Apply
+              a.btn.btn-default.btn-search.margin-left-5  href="#{active_admin_users_path}" Clear
+    .panel
+      .panel-body.container-fluid
+        /= search_form_for [:admin,@q], as: :user_query do |f|
+          .row
+            .col-sm-3.pull-right.hidden-xs.hidden-sm
+              .input-search.input-search-dark
+                i.input-search-icon.md-search
+                = f.search_field :user_name_or_phone_number_or_first_name_or_last_name_cont, class:'form-control',  placeholder:"Search..."
+                button type="submit" class="input-search-close icon md-search" aria-label="Close"
+            .margin-bottom-20
+        table.table.table-hover
+          thead
+            tr
+              th Name
+              th User Name
+              th Phone
+              th style="width:250px;" Options
+          tbody
+            - users.each do |user|
+              tr
+                td= user.full_name
+                td= user.user_name
+                td= user.phone_number
+                td.table-options
+                  -if user.is_blocked
+                    = link_to 'Unban', toggle_block_admin_user_path(user, operation: false), class:"btn btn-pure btn-primary"
+                  -else
+                    = link_to 'Ban', toggle_block_admin_user_path(user, operation: true), class:"btn btn-pure btn-primary"
+                  = link_to '', admin_user_path(user), class:"btn btn-pure btn-primary icon fa fa-eye", remote:true,"data-toggle":"modal","data-target":"#my-modal"
+                  = link_to '', edit_admin_user_path(user), class:"btn btn-pure btn-primary icon fa fa-edit"
+                  = link_to '', admin_user_path(user), class:"btn btn-pure btn-danger icon fa fa-trash",method: :delete, data: { confirm: 'Are you sure?' }
+        = paginate users
+    br clear="all"
+        /! End Content Table
+
+#my-modal.modal.fade aria-hidden="false" role="dialog" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close aria-label="Close" data-dismiss="modal" type="button"
+          span aria-hidden="true"  ×
+        h4#exampleFormModalLabel.modal-title User
+      .modal-body.remote-content

@@ -1,0 +1,5 @@
+table.table.table-striped
+  - for attribute in device.attributes.keys
+    tr
+      th style="width:200px;" = attribute.humanize
+      td = device.attributes[attribute].to_s

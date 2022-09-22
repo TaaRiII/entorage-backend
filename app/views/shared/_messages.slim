@@ -1,0 +1,17 @@
+- flash.each do |key, value|
+  ruby:
+    case key
+    when 'alert'
+      c = 'danger'
+    when 'notice'
+      c = 'info'
+    when 'success'
+      c = 'success'
+    else
+      c = 'info'
+    end
+  .alert.key class="alert dark alert-icon alert-#{c} alert-dismissible"
+    button.close aria-label="Close" data-dismiss="alert" type="button"
+      span aria-hidden="true"  ×
+    i.icon aria-hidden="true"
+    | #{value}

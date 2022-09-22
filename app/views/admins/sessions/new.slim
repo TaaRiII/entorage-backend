@@ -1,0 +1,20 @@
+= content_for :body_class, "login-page"
+.login-box
+  .login-logo
+    a href=admin_root_path
+      b Entourage
+      | Admin
+  .login-box-body
+    p.login-box-msg Sign in to start your session
+    = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+      .form-group.has-feedback
+
+        = f.email_field :email, autofocus: true, class:'form-control', placeholder:'Email Address'
+        span.glyphicon.glyphicon-envelope.form-control-feedback
+      .form-group.has-feedback
+        = f.password_field :password, autocomplete: "new-password", class:'form-control', placeholder:'Password'
+        span.glyphicon.glyphicon-lock.form-control-feedback
+      .row
+        .col-xs-8
+        .col-xs-4
+          button.btn.btn-primary type="submit"  Sign In

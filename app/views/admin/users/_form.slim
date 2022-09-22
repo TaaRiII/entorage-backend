@@ -1,0 +1,51 @@
+/! Page
+.page
+  .page-header
+    h1.page-title Users
+    ol.breadcrumb
+      li
+        a href="#{admin_users_path}"  User
+
+  .page-content
+    .row
+      .col-sm-12
+        .panel
+          .panel-body
+            = simple_form_for [:admin,user] do |f|
+              .wizard-content
+                .row
+                  .col-sm-6
+                    = f.input :user_name, wrapper: :form_material
+
+                  .col-sm-6
+                    = f.input :phone_number, wrapper: :form_material
+                .row
+                  .col-sm-12
+                    = f.input :bio, wrapper: :form_material
+
+                .row
+                  .col-sm-6
+                    = f.input :latitude, wrapper: :form_material
+                  .col-sm-6
+                    = f.input :longitude,wrapper: :form_material
+
+                .row
+                  .col-sm-6
+                    = f.input :dob, as: :string, wrapper: :date_input, label: false, placeholder:'mm/dd/yyyy',input_html:{value: user.dob? ? user.dob : ""}
+                  .col-sm-6
+                    = f.input :gender, as: :select, collection:[:male,:female], include_blank:false, wrapper: :base_input
+
+                .row
+                  .example#photos
+                    = f.simple_fields_for :photos do |o|
+                      = render 'photo_fields', f: o
+                    .col-sm-3.col-xs-6
+                      = link_to_add_association f, :photos, class:"btn btn-default waves-effect waves-classic waves-effect waves-light" do
+                        |&nbsp;+ Add
+
+
+                .row
+                  .col-sm-12
+                    .pull-right
+                      .btn-group
+                        = f.submit "Save", class:'btn btn-primary'

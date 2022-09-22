@@ -1,0 +1,5 @@
+table.table.table-striped
+  - for attribute in notification.attributes.keys
+    tr
+      th style="width:200px;" = attribute.humanize
+      td = notification.attributes[attribute].to_s

@@ -1,0 +1,26 @@
+/! Page
+.page
+  .page-header
+    h1.page-title Settings
+    ol.breadcrumb
+      li
+        a href="#{admin_users_path}"  Users
+
+  .page-content
+    .row
+      .col-sm-12
+        .panel
+          .panel-body
+            = simple_form_for :nothing, url: save_setting_admin_users_path do |f|
+              .wizard-content
+                .row
+                  .col-sm-6
+                    = f.input :ios_version, wrapper: :form_material, input_html: {value: "#{Admin.first.ios_version if Admin.first.present?}"}
+                  .col-sm-6
+                    = f.input :base_url, wrapper: :form_material, input_html: {value: "#{Admin.first.base_url if Admin.first.present?}"}
+
+                .row
+                  .col-sm-12
+                    .pull-right
+                      .btn-group
+                        = f.submit "Save", class:'btn btn-primary'

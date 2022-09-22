@@ -1,0 +1,36 @@
+.page
+  .page-header
+    h1.page-title List
+    .page-header-actions
+       = link_to "New" ,new_admin_group_status_path(status_type: @status_type), class: "btn btn-primary"
+  .page-content
+    = render "shared/messages"
+    .panel
+      .panel-body.container-fluid
+        table.table.table-hover
+          thead
+            tr
+              th Name
+              th Icon
+              th style="width:150px;" Options
+          tbody
+            - group_statuses.each do |group_status|
+              tr
+                td= group_status.name
+                td= image_tag group_status.icon.url, class: 'logo'
+                td.table-options
+                  = link_to '', admin_group_status_path(group_status), class:"btn btn-pure btn-primary icon fa fa-eye", remote:true,"data-toggle":"modal","data-target":"#my-modal"
+                  = link_to '', edit_admin_group_status_path(group_status), class:"btn btn-pure btn-primary icon fa fa-edit"
+                  = link_to '', admin_group_status_path(group_status), class:"btn btn-pure btn-danger icon fa fa-trash",method: :delete, data: { confirm: 'Are you sure?' }
+        = paginate group_statuses
+    br clear="all"
+        /! End Content Table
+
+#my-modal.modal.fade aria-hidden="false" role="dialog" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close aria-label="Close" data-dismiss="modal" type="button"
+          span aria-hidden="true"  ×
+        h4#exampleFormModalLabel.modal-title Group Status
+      .modal-body.remote-content

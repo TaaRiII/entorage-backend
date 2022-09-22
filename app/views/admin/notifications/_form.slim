@@ -1,0 +1,33 @@
+css:
+  .fstMultipleMode .fstControls {
+      width: 31em !important;
+  }
+/! Page
+.page
+  .page-header
+    h1.page-title Notification
+    ol.breadcrumb
+      li
+        a href="#{admin_notifications_path}"  Notification
+      li.active Create
+  .page-content
+    = render "shared/messages"
+    .row
+      .col-sm-12
+        .panel
+          .panel-body
+              = simple_form_for [:admin,notification] do |f|
+                .wizard-content
+                  .row
+                    .col-sm-4
+                      = f.association :users, collection:User.all.collect{|u| [u.user_name, u.id]}, wrapper: :base_input, prompt: 'All', multipe: true, input_html:{class:'multiselectfast'}
+                      /= f.association :users, collection: User.all.collect{|u| [u.user_name, u.id]}, label: false, input_html: { class: 'multiselectfast'}
+                  .row
+                    .col-sm-12
+                      = f.input  :message,as: :text,wrapper: :form_material,required: true
+
+                  .row
+                    .col-sm-12
+                      .pull-right
+                        .btn-group
+                          = f.submit "Send", class:'btn btn-primary waves-effect waves-light'

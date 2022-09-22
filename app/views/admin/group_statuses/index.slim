@@ -1,0 +1,63 @@
+.page
+  .page-header
+    h1.page-title #{GroupStatus.status_types.keys[params[:query][:status_type_eq].to_i]} List
+    .page-header-actions
+       = link_to "New" ,new_admin_group_status_path(status_type: @status_type), class: "btn btn-primary"
+  .page-content
+    = render "shared/messages"
+    .panel
+      .panel-body
+        - if  params[:query][:status_type_eq] != "1"
+          p.margin-bottom-30
+            strong Tip:
+            | You can change the order by clicking and dragging the &nbsp;
+            span.label.label-outline.label-default.label-lg
+              i.icon.md-unfold-more
+              |&nbsp;handles
+            |&nbsp;on the left.
+        .dd
+          ul.dd-list
+            - group_statuses.each do |group_status|
+              li.dd-item.dd-item-alt.dd-nochildren data-id="#{group_status.id}" data-navid="#{group_status.id}"
+                - if  params[:query][:status_type_eq] != "1"
+                  .dd-handle
+                .dd-content
+                  |&nbsp;#{group_status.name}
+                  span = image_tag group_status.icon.url, class: 'logo-sm'
+                  span.pull-right.menuactions
+                    = link_to '', admin_group_status_path(group_status), class:"btn btn-pure btn-primary icon fa fa-eye", remote:true,"data-toggle":"modal","data-target":"#my-modal"
+                    = link_to '', edit_admin_group_status_path(group_status), class:"btn btn-pure btn-primary icon fa fa-edit"
+                    = link_to '', admin_group_status_path(group_status), class:"btn btn-pure btn-danger icon fa fa-trash",method: :delete, data: { confirm: 'Are you sure?' }
+
+    br clear="all"
+        /! End Content Table
+
+#my-modal.modal.fade aria-hidden="false" role="dialog" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close aria-label="Close" data-dismiss="modal" type="button"
+          span aria-hidden="true"  ×
+        h4#exampleFormModalLabel.modal-title Group Status
+      .modal-body.remote-content
+= content_for :javascript
+  javascript:
+    $(function(){
+      $('.dd').nestable({
+          maxDepth:1,
+          callback: function(l,e){
+            var position = e.index();
+            var group_status_id = e.data("navid");
+            update_list(position,group_status_id)
+          }
+        })
+
+      function update_list(position="",group_status_id){
+        var url = "/admin/group_statuses/" + group_status_id + "/set_position"
+        $.ajax({
+          method: "POST",
+          data: {position:position},
+          url: url
+        });
+      }
+    });

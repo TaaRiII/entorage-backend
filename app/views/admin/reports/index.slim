@@ -1,0 +1,71 @@
+.page
+  .page-header
+    h1.page-title Report List
+    ol.breadcrumb
+      li
+        a href="#{admin_root_path}"  Home
+      li
+        a href="#{admin_reports_path}"  Report
+      li.active Report List
+    .page-header-actions
+  .page-content
+    = render "shared/messages"
+    .panel
+      .panel-body.container-fluid
+        = simple_form_for [:admin,@q], url:admin_reports_path, html:{method: :get, id: "search_from"}  do |f|
+          .row
+            .col-md-2
+              = f.input :user_user_name_cont, label:false, required:false, placeholder:'Name'
+            .col-md-2
+              = f.input :user_phone_number_cont, label:false, required:false, placeholder:'Phone Number'
+            .col-md-2
+              = f.select :report_type_eq, options_for_select(Report.report_types.keys.to_a.each_with_index.map { |x,i| [x, i] }, @q.report_type_eq),{prompt: 'Select Type'}, {class:'form-control ', data:{placeholder:'Select Type'} }
+            .col-md-2
+              = f.select :status_eq, options_for_select(Report.statuses.keys.to_a.each_with_index.map { |x,i| [x, i] }, @q.status_eq),{prompt: 'Select Status'}, {class:'form-control ', data:{placeholder:'Select Status'} }
+
+            .col-md-2
+              button.btn.btn-primary.btn-search  type="submit" Apply
+              a.btn.btn-default.btn-search.margin-left-5  href="#{admin_reports_path}" Clear
+    .panel
+      .panel-body.container-fluid
+        table.table.table-hover
+          thead
+            tr
+              th Name
+              th User Name
+              th Phone
+              th Status
+              th style="width:250px;" Options
+          tbody
+            - reports.each do |report|
+              tr
+                - next if report.user.nil?
+                td= report.user.full_name
+                td= report.user.user_name
+                td= report.user.phone_number
+                td.text-nowrap
+                  .btn-group role="group"
+                    button#SignupMType.btn.dropdown-toggle.waves-effect.waves-light.waves-effect.waves-light.waves-round aria-expanded="false" class="#{report_status(report.status)}" data-toggle="dropdown" type="button"
+                      span.hidden-xs #{report.status}
+                      span.caret
+                    ul.dropdown-menu role="menu"  style= "min-width: 100px;"
+                      li
+                        = link_to "Pending", change_status_admin_report_path(report,status: 0),method: :put, class:"btn btn-sm btn-icon btn-flat btn-default blue-600 ntd-link"
+                      li
+                        = link_to "Ignore",change_status_admin_report_path(report,status: 1),method: :put, class:"btn btn-sm btn-icon btn-flat btn-default green-600 ntd-link"
+                      li
+                        = link_to  "Ban",change_status_admin_report_path(report,status: 2),method: :put, class:"btn btn-sm btn-icon btn-flat btn-default red-600 ntd-link"
+                td.table-options
+                  = link_to '', admin_report_path(report), class:"btn btn-pure btn-primary icon fa fa-eye", remote:true,"data-toggle":"modal","data-target":"#my-modal"
+        = paginate reports
+    br clear="all"
+        /! End Content Table
+
+#my-modal.modal.fade aria-hidden="false" role="dialog" tabindex="-1"
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        button.close aria-label="Close" data-dismiss="modal" type="button"
+          span aria-hidden="true"  ×
+        h4#exampleFormModalLabel.modal-title Report
+      .modal-body.remote-content

@@ -1,0 +1,9 @@
+.nested-fields
+  .col-sm-12
+    .col-sm-4.col-xs-4
+      = f.input :image, wrapper: :horizontal_file_input
+    .col-sm-6
+      - if f.object.image.present?
+        = image_tag(f.object.image(:thumb))
+    .col-sm-2.col-xs-2.margin-top-15
+      = link_to_remove_association "Remove " , f, class: "btn btn-danger"

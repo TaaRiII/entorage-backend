@@ -1,0 +1,78 @@
+.page
+  .page-header
+    ol.breadcrumb.hidden-xs
+      li
+        a href="#{admin_root_path}"  Home
+      li Notifications
+      li Devices
+    h1.page-title Devices List
+    .page-header-actions
+  .page-content
+    = render "shared/messages"
+    /! Content Table
+    .panel
+      .panel-body
+        = search_form_for [:admin,@q], as: :device_query do |f|
+          .row
+            .col-sm-3.pull-right.hidden-xs.hidden-sm
+              .input-search.input-search-dark
+                i.input-search-icon.md-search
+                = f.search_field :user_user_name_cont, class:'form-control',  placeholder:"Search..."
+                button type="submit" class="input-search-close icon md-search" aria-label="Close"
+            .margin-bottom-20
+
+        .table-responsive
+          table.table.table-striped data-plugin="floatThead"
+            thead
+              tr
+                th User
+                th Fcm Token?
+                th Physical Address
+                th Device Type
+                th style=("width: 120px;")  Options
+            tbody aria-live="polite" aria-relevant="all"
+              - devices.each do |device|
+                tr.odd
+                  td =device.user.user_name unless device.user.nil?
+                  td = device.fcm_token.blank? ? "No Token" : "Yes"
+                  td =device.physical_address
+                  td = device.device_type
+                  td.text-nowrap
+                    = link_to admin_device_path(device), class:"btn btn-sm btn-icon btn-flat btn-default blue-900 ", remote:true,"data-toggle":"modal","data-target":"#my-modal" do
+                      i.icon.md-eye aria-hidden="true"
+                    = link_to admin_device_path(device), class:"btn btn-sm btn-icon btn-flat btn-default red-600 ", method: :delete, data: { confirm: 'Are you sure?' }, "data-original-title":"Delete","data-toggle":"tooltip" do
+                      i.icon.md-delete aria-hidden="true"
+          = paginate devices
+    br clear="all"
+  br clear="all"
+    /! End Content Table
+#my-modal.modal.fade.modal-slide-from-bottom.in aria-hidden="false" aria-labelledby="AddCourse" role="dialog" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close aria-label="Close" data-dismiss="modal" type="button"
+          span aria-hidden="true"  ×
+        h4#exampleFormModalLabel.modal-title Device
+      .remote-content
+
+= content_for :javascript
+  javascript:
+    $(function(){
+      $('.dd').nestable({
+          maxDepth:1,
+          callback: function(l,e){
+            var position = e.index();
+            var group_status_id = e.data("navid");
+            update_list(position,group_status_id)
+          }
+        })
+
+      function update_list(position="",group_status_id){
+        var url = "/club/food_delivery/group_statuss/" + group_status_id + "/set_position"
+        $.ajax({
+          method: "POST",
+          data: {position:position},
+          url: url
+        });
+      }
+    });

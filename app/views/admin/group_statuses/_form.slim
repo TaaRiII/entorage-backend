@@ -1,0 +1,55 @@
+/! Page
+.page
+  .page-header
+
+  .page-content
+    .row
+      .col-sm-12
+        .panel
+          .panel-body
+            = simple_form_for [:admin,group_status] do |f|
+              .wizard-content
+                .row
+                  .col-sm-12
+                    = f.input :address, label: false, wrapper: :form_material
+                .row
+                  .col-sm-12
+                    = f.input :name, wrapper: :form_material
+                .row
+                  .col-sm-6
+                     = f.input :latitude, readonly: true
+                  .col-sm-6
+                     = f.input :longitude, readonly: true
+
+                -if group_status.new_record?
+                  .row
+                    .col-sm-12
+                      = f.input :status_type, as: :hidden, input_html: {value: GroupStatus.status_types.keys[params[:status_type].to_i]}
+                .row
+                  .col-sm-12
+                    = f.input :icon, as: :file
+                .row
+                  .col-sm-12
+                    .pull-right
+                      .btn-group
+                        = f.submit "Save", class:'btn btn-primary'
+
+javascript:
+  let seller_autocomplete;
+
+  google.maps.event.addDomListener(window, 'load', function () {
+      selleraddress1Field = document.querySelector("#group_status_address");
+      seller_autocomplete = new google.maps.places.Autocomplete(selleraddress1Field, {
+        fields: ["address_components", "geometry"],
+        types: ["establishment"],
+        componentRestrictions: {country: "us"}
+      });
+      seller_autocomplete.addListener("place_changed", sellerfillInAddress);
+
+  });
+
+  function sellerfillInAddress() {
+      const place = seller_autocomplete.getPlace();
+      $("#group_status_latitude").val(place.geometry.location.lat());
+      $("#group_status_longitude").val(place.geometry.location.lng());
+    }

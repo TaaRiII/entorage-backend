@@ -1,0 +1,18 @@
+instant_match_reset_job:
+  cron: '1 4 * * *'
+  class: 'InstantMatchResetWorker'
+  queue: default
+
+spot_light_reset_job:
+  cron: '5 4 * * 1'
+  class: 'SpotLightResetWorker'
+  queue: default
+age_update_job:
+  cron: '0 5 * * *'
+  class: 'AgeUpdateWorker'
+  queue: default
+
+# kick_out_user_job:
+#   cron: '0 6 * * *'
+#   class: 'KickOutUserWorker'
+#   queue: default

@@ -1,0 +1,17 @@
+table.table.table-striped
+  tr
+    th style="width:200px;" User
+    td = report.user.user_name
+  tr
+    th style="width:200px;" Phone Number
+    td = report.user.phone_number
+  tr
+    th style="width:200px;" Reporter
+    td = report.reporter.user_name
+  tr
+    th style="width:200px;" Reasone
+    td = report.reason
+  -if report.image.present?
+    tr
+      th style="width:200px;" Image
+      td = image_tag report.image.url, class: 'report_image'
